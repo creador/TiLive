@@ -13,9 +13,9 @@ var home = process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
 
 exports.cliVersion = '>=3.2.0';
 exports.version = '1.0';
-exports.title = 'TiShadow Express';
-exports.desc  = 'For very basic and quick tishadow usage';
-exports.extendedDesc = 'Requires tishadow: `[sudo] npm install -g tishadow`';
+exports.title = 'TiLive Express';
+exports.desc  = 'For very basic and quick tilive usage';
+exports.extendedDesc = 'Requires tilive: `[sudo] npm install -g tishadow`';
 
 exports.init = init;
 var logger;
@@ -29,6 +29,7 @@ function init(_logger, config, cli) {
 function preValidateHook(build,finished) {
   if (build.cli.argv.$_.indexOf('--shadow') !== -1 ||
       build.cli.argv.$_.indexOf('--tishadow') !== -1 ||
+      build.cli.argv.$_.indexOf('--tilive') !== -1 ||
       build.cli.argv.$_.indexOf('--appify') !== -1) {
     build.cli.config.cli.failOnWrongSDK = true;
   }
@@ -37,6 +38,7 @@ function preValidateHook(build,finished) {
 function preCompileHook(build, finished) {
   if (build.cli.argv.$_.indexOf('--shadow') === -1 &&
       build.cli.argv.$_.indexOf('--tishadow') === -1 &&
+      build.cli.argv.$_.indexOf('--tilive') === -1 &&
       build.cli.argv.$_.indexOf('--appify') === -1) {
     return finished();
   }
@@ -46,7 +48,7 @@ function preCompileHook(build, finished) {
 
   // pass through arguments
   var args = build.cli.argv.$_
-  .filter(function(el) { return el !== "--shadow" && el !== "--tishadow" && el !== "--appify"});
+  .filter(function(el) { return el !== "--shadow" && el !== "--tishadow" && el !== "--tilive" && el !== "--appify"});
 
   // temp appify build path
   var new_project_dir = path.join(build.projectDir, 'build', 'appify');

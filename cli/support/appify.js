@@ -51,7 +51,7 @@ exports.copyCoreProject = function(env) {
     logger.info("Upgrading existing app....");
 
     if (!fs.existsSync(path.join(dest,'Resources'))) {
-      logger.error("Could not find existing tishadow app");
+      logger.error("Could not find existing tilive app");
       return false;
     }
     var target_tiapp = fs.readFileSync(path.join(dest,"tiapp.xml"),'utf8');

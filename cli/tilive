@@ -1,0 +1,268 @@
+#!/usr/bin/env node
+/*
+ * Copyright (c) 2011-2017 Creador S.A. All Rights Reserved.
+ * Please see the LICENSE file included with this distribution for details.
+ */
+
+var api            = require('./support/api'),
+    compiler       = require('./support/compiler'),
+    colors         = require('colors'),
+    config         = require('./support/config'),
+    logger         = require("../server/logger.js"),
+    pkginfo        = require('pkginfo'),
+    program        = require('commander'),
+    fs             = require('fs'),
+    path           = require('path'),
+    spawn          = require('./support/spawn'),
+    updateNotifier = require('update-notifier'),
+    chokidar       = require('chokidar'),
+    _ = require("underscore");
+
+// check if watch enabled
+var at_index = process.argv.indexOf("@");
+config.isWatching = false;
+if (at_index > -1) {
+  config.isWatching = true;
+  process.argv.splice(at_index,1);
+}
+
+
+pkginfo(module, 'name', 'version');
+
+program
+  .version(module.exports.version, '-v, --version')
+  .description('TiLive CLI')
+  .usage('COMMAND [OPTIONS]');
+
+program.command('server')
+  .description('start the TiLive server'.grey)
+  .option('-p, --port <port>', 'server port')
+  .option('-l, --long-polling', 'force long polling')
+  .option('-i, --internal-ip <internal-ip>', 'internal ip to bind to')
+  .option('-s, --screenshot-path <screenshot-path>', 'path to save screenshot (defaults to /tmp)')
+  .option('-z, --manage-versions', 'manage and automatically update bundles')
+  .action(function(env) {
+    // run package notifier but only on server command.
+    var notifier = updateNotifier({
+      packagePath: "../package.json",
+//      updateCheckInterval: 1000 * 60 * 60 * 24 * 7 // 1 week
+    });
+
+    if (notifier.update) {
+      notifier.notify();
+    }
+
+    config.init(env);
+    require("../server/app.js");
+  });
+
+program.command('clear')
+  .description('clear the application cache on all connected devices'.grey)
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .option('-P, --platform <platform>', 'target platform')
+  .action(api.clearCache);
+
+program.command('run')
+  .description('deploy full application to all connected devices'.grey)
+  .option('-u, --update', 'only send recently changed files')
+  .option('-a, --patch', 'patch updated files without causing app restart')
+  .option('-i, --inspector', 'enable automatic inspection and spies')
+  .option('-l, --locale <locale>', 'set the locale in in the TiShadow app')
+  .option('-j, --jshint', 'analyse code with JSHint')
+  .option('-t, --tail-logs', 'tail server logs on deploy')
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .option('-s, --skip-alloy-compile', 'skip automatic alloy compilation')
+  .option('-f, --alloy-compile-file <filename>', 'compile only one alloy file')
+  .option('-P, --platform <platform>', 'target platform')
+  .option('-D, --include-dot-files', 'includes dot files in the bundle (defaults to false)')
+  .option('-T, --target <app_name>', 'target TiShadow app (defaults to name on tiapp.xml or moduleid on manifest)')
+  .option('-c, --ticommonjs', 'support for applications using the ti-commonjs library')
+  .action(compiler);
+
+program.command('deploy')
+  .description('deploy full application to the server without pushing'.grey)
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .option('-s, --skip-alloy-compile', 'skip automatic alloy compilation')
+  .option('-D, --include-dot-files', 'includes dot files in the bundle (defaults to false)')
+  .action(compiler);
+
+program.command('bundle')
+  .description('prepare a TiLive bundle without deploying it'.grey)
+  .option('-s, --skip-alloy-compile', 'skip automatic alloy compilation')
+  .option('-D, --include-dot-files', 'includes dot files in the bundle (defaults to false)')
+  .option('-j, --jshint', 'analyse code with JSHint')
+  .action(compiler);
+
+program.command('spec')
+  .description('run jasmin spec tests on all connected devices'.grey)
+  .option('-u, --update', 'only send recently changed files')
+  .option('-l, --locale <locale>', 'set the locale in in the TiLive app')
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .option('-t, --type <type>', 'testing library')
+  .option('-j, --jshint', 'analyse code with JSHint')
+  .option('-x, --junit-xml','output report as JUnit XML')
+  .option('-P, --platform <platform>', 'target platform')
+  .option('-s, --skip-alloy-compile', 'skip automatic alloy compilation')
+  .option('-f, --alloy-compile-file <filename>', 'compile only one alloy file')
+  .option('-D, --include-dot-files', 'includes dot files in the bundle (defaults to false)')
+  .option('-T, --target <app_name>', 'target TiLive app (defaults to name on tiapp.xml or moduleid on manifest)')
+  .option('-C, --clear-spec-files', 'clears only the spec files from the cache')
+  .option('-c, --coverage <report_types>', 'runs code coverage, for available report_types see https://github.com/gotwarlost/istanbul#the-report-command')
+  .action(compiler);
+
+program.command('close')
+  .description('close the running app on the device'.grey)
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .option('-P, --platform <platform>', 'target platform')
+  .action(api.closeApp);
+
+program.command('repl')
+  .description('launch REPL'.grey)
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .option('-i, --pipe', 'pipe to repl')
+  .option('-P, --platform <platform>', 'target platform')
+  .action(api.sendSnippet);
+
+program.command('screenshot')
+  .description('capture screenshots of all connected devices'.grey)
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .option('-s, --screencast <interval>', 'screencast mode, interval in ms')
+  .option('-x, --scale <ratio>', 'ratio (as decimal) to scale screenshot')
+  .option('-P, --platform <platform>', 'target platform')
+  .action(api.screenshot);
+
+program.command('log')
+  .description('tail server logs'.grey)
+  .option('-o, --host <host>', 'server host name / ip address')
+  .option('-p, --port <port>', 'server port')
+  .option('-r, --room <room>', 'server room')
+  .action(function(env) {
+    config.init(env);
+    require('./support/socket').connect();
+  });
+
+program.command('config')
+  .description('set default configuration settings'.grey)
+  .option('-o, --host <host>', 'set default server host name / ip address')
+  .option('-p, --port <port>', 'set default server port')
+  .option('-r, --room <room>', 'set default server room')
+  .option('-i, --inspector', 'enable automatic inspection and spies')
+  .option('-u, --use-appc-CLI', 'use the appcelerator cli')
+  .option('-b, --boost', 'use super fast selective alloy compilation')
+  .option('-t, --type <type>', 'default testing library')
+  .option('-w, --watch-delay <millis>',    'time to wait before responding to for changes (default: 0)')
+  .option('-i, --watch-interval <millis>', 'time to wait between checking files for changes (default: 100)')
+  .option('-x, --watch-exclude <glob>', 'files to exclude from watch')
+  .option('-n, --network-interface <interface>', 'set default network interface (used in express mode)')
+  .action(config.write);
+
+program.command('app')
+  .description('generate a titanium project with TiLive app source code'.grey)
+  .option('-d, --destination <path>', 'target path for generated project')
+  .option('-u, --upgrade', 'upgrade an existing tilive app')
+  .action(function(env) {
+    if (env.upgrade) {
+      require('./support/appify').copyCoreProject(env);
+    } else {
+      program.prompt("Enter app id [cl.creador.tilive]: ", function(appid) {
+        env.appid = appid.trim() || "cl.creador.tilive";
+        require('./support/appify').copyCoreProject(env);
+        process.stdin.destroy();
+      });
+    }
+  });
+
+program.command('appify')
+  .description('generate an appified TiLive app'.grey)
+  .option('-d, --destination <path>', 'target path for generated project')
+  .option('-o, --host <host>', 'set server host name / ip address')
+  .option('-p, --port <port>', 'set server port')
+  .option('-r, --room <room>', 'set server room')
+  .option('-m, --modify-app-id', 'appends .appifed to the applicatin id')
+  .option('-P, --platform <platform>', 'target platform')
+  .action(require('./support/appify').build);
+
+program.command('express')
+  .description('install a titanium cli command plugin `shadow` for simple tilive development')
+  .action(function() {
+    var hooks = spawn('ti', ['config','paths.hooks','-a',path.join( __dirname ,'..', 'plugin','yy.tishadow','1.0','hooks')]);
+    hooks.stderr.pipe(process.stderr);
+    hooks.on("exit", function(code) {
+      code === 0 && logger.info("Titanium CLI hook installed. Now use the `--tilive` flag when buliding your project for express tilive development");
+    });
+  });
+
+function execute(filenames) {
+  var argv = process.argv.slice(0);
+  if(program.args && program.args[0]) {
+    program.args[0].alloyCompileFile =config.alloyCompileFile =  undefined;
+  }
+  if ((argv[2] === "run" || argv[2] === "spec") && filenames && !_.find(filenames, function(f){ return f.match(/app.tss$/)}) ) {
+    argv.push("-f");
+    argv.push(filenames.join(','));
+  }
+  program.parse(argv);
+  // Display help on an invalid command
+  if (program.args.length === 0 || typeof program.args[program.args.length -1] === 'string'){
+    program.help();
+  }
+}
+
+if (config.isWatching) {
+  config.buildPaths({},function() {
+    var paths = [config.isAlloy ? "app" :"Resources"];
+    if(!config.isAlloy1_8_later && fs.existsSync(path.join(config.base, 'i18n'))){
+      paths.push('i18n');
+    }
+    if (config.isSpec) {
+      paths.push('spec');
+    }
+    paths = paths.map(function(p) {
+      return path.join(p,"**/*");
+    });
+    if (config.watchExclude) {
+      config.watchExclude.split(",").forEach(function(g) {
+        paths.push("!" + g.trim());
+      });
+    }
+    var ready = false;
+
+    var changedFiles = [];
+    var debouncedExcute = _.debounce(function () {
+      execute(changedFiles);
+      changedFiles = [];
+    },config.watchDelay);
+
+    var watcher = chokidar.watch(paths, {
+      interval: config.watchInterval,
+      cwd: config.base
+    })
+    .on('all', function watcher(event, filepath) {
+      if (!ready) {return};
+      logger.debug(event + ": " + filepath);
+      changedFiles.push(filepath);
+      debouncedExcute();
+    })
+    .on('ready', ()=> {
+      logger.debug("watcher ready")
+      ready=true
+    });
+  });
+  api.startRepl();
+}
+
+execute();

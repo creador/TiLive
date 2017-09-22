@@ -42,11 +42,11 @@
     "url": "https://github.com/creador/TiLive.git"
   },
   "bin": {
-    "tilive": "./cli/tishadow",
-    "tl": "./cli/tishadow"
+    "tilive": "./cli/tilive",
+    "tl": "./cli/tl"
   },
   "scripts": {
-    "postinstall": "node cli/tishadow express"
+    "postinstall": "node cli/tilive express"
   },
   "license": "Apache-2.0",
   "framework": "none",
