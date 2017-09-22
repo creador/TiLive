@@ -31,11 +31,11 @@ pkginfo(module, 'name', 'version');
 
 program
   .version(module.exports.version, '-v, --version')
-  .description('TiShadow CLI')
+  .description('TiLive CLI')
   .usage('COMMAND [OPTIONS]');
 
 program.command('server')
-  .description('start the TiShadow server'.grey)
+  .description('start the TiLive server'.grey)
   .option('-p, --port <port>', 'server port')
   .option('-l, --long-polling', 'force long polling')
   .option('-i, --internal-ip <internal-ip>', 'internal ip to bind to')
@@ -93,7 +93,7 @@ program.command('deploy')
   .action(compiler);
 
 program.command('bundle')
-  .description('prepare a TiShadow bundle without deploying it'.grey)
+  .description('prepare a TiLive bundle without deploying it'.grey)
   .option('-s, --skip-alloy-compile', 'skip automatic alloy compilation')
   .option('-D, --include-dot-files', 'includes dot files in the bundle (defaults to false)')
   .option('-j, --jshint', 'analyse code with JSHint')
@@ -102,7 +102,7 @@ program.command('bundle')
 program.command('spec')
   .description('run jasmin spec tests on all connected devices'.grey)
   .option('-u, --update', 'only send recently changed files')
-  .option('-l, --locale <locale>', 'set the locale in in the TiShadow app')
+  .option('-l, --locale <locale>', 'set the locale in in the TiLive app')
   .option('-o, --host <host>', 'server host name / ip address')
   .option('-p, --port <port>', 'server port')
   .option('-r, --room <room>', 'server room')
@@ -113,7 +113,7 @@ program.command('spec')
   .option('-s, --skip-alloy-compile', 'skip automatic alloy compilation')
   .option('-f, --alloy-compile-file <filename>', 'compile only one alloy file')
   .option('-D, --include-dot-files', 'includes dot files in the bundle (defaults to false)')
-  .option('-T, --target <app_name>', 'target TiShadow app (defaults to name on tiapp.xml or moduleid on manifest)')
+  .option('-T, --target <app_name>', 'target TiLive app (defaults to name on tiapp.xml or moduleid on manifest)')
   .option('-C, --clear-spec-files', 'clears only the spec files from the cache')
   .option('-c, --coverage <report_types>', 'runs code coverage, for available report_types see https://github.com/gotwarlost/istanbul#the-report-command')
   .action(compiler);
@@ -171,7 +171,7 @@ program.command('config')
   .action(config.write);
 
 program.command('app')
-  .description('generate a titanium project with TiShadow app source code'.grey)
+  .description('generate a titanium project with TiLive app source code'.grey)
   .option('-d, --destination <path>', 'target path for generated project')
   .option('-u, --upgrade', 'upgrade an existing tishadow app')
   .action(function(env) {

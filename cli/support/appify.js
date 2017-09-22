@@ -171,7 +171,7 @@ exports.build = function(env) {
       // copy the bundle
       fs.writeFileSync(path.join(dest_resources, config.app_name.replace(/ /g,"_") + ".zip"),fs.readFileSync(config.bundle_file));
 
-      logger.info("TiShadow app ready");
+      logger.info("TiLive app ready");
     }
   });
 }
