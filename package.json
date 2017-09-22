@@ -43,7 +43,7 @@
   },
   "bin": {
     "tilive": "./cli/tilive",
-    "tl": "./cli/tl"
+    "tl": "./cli/tilive"
   },
   "scripts": {
     "postinstall": "node cli/tilive express"
