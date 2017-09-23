@@ -1,8 +1,8 @@
-#appname:TiShadow
-#publisher:dbankier
-#url:http://
+#appname:LiveTester
+#publisher:Creador S.A.
+#url:http://www.creador.cl
 #image:appicon.png
-#appid:com.yydigital.tishadow
-#desc:not specified
-#type:ipad
-#guid:276f242f-e730-4a6f-b3d6-127e88936de5
+#appid:cl.creador.tilive1
+#desc:Concepto Live Tester
+#type:iphone
+#guid:83f0f06e-05fd-4263-9888-f2a1a55d1959

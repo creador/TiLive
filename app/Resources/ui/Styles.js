@@ -32,7 +32,7 @@ var tab = {
 
 exports.login = {
 	container : {
-		height : "190dp",
+		height : "150dp",
 		width : "300dp",
 		backgroundColor : "white"
 	},
@@ -43,20 +43,21 @@ exports.login = {
 			fontSize : "16dp",
 			fontWeight : 'bold'
 		},
-		color: 'black',
-		text : "Connect to TiShadow Server",
+		color: '#214C8F',
+		text : "Concepto Live Tester",
 		textAlign : 'center'
 	},
 	host : _.defaults({
 		left: "10dp",
     width : "280dp",
     height: "40dp",
-		hintText : "IP Address"
+		hintText : "URL Servidor",
+		
 	}, textField),
   port : _.defaults({
     right: "10dp",
     width : "65dp",
-    hintText : "Port",
+    hintText : "Puerto",
     visible: false
   }, textField),
   colon : _.defaults({
@@ -68,11 +69,12 @@ exports.login = {
     visible: false
   }, textField),
   room: _.defaults({
-		top : "95dp",
+		//top : "95dp",
 		left: "10dp",
-    width : "280dp",
-		hintText : "Room",
-    visible: false
+    	width : "280dp",
+		hintText : "Usuario",
+		autocapitalization: Ti.UI.TEXT_AUTOCAPITALIZATION_NONE,
+    	//visible: true
 	}, textField),
   leftTab: _.defaults({
     text: 'Standard',
@@ -95,8 +97,8 @@ exports.login = {
       fontSize : '16dp',
       fontWeight : 'bold'
     },
-    bottom : '50dp',
-    title : "Connect"
+    bottom : '20dp',
+    title : "Conectar"
   }
 };
 exports.isPost7 = (Ti.Platform.osname === "iphone" || Ti.Platform.osname === "ipad") &&
@@ -108,7 +110,7 @@ exports.start = {
     exitOnClose : true,
     navBarHidden: true,
     keepScreenOn: true,
-    title: "TiShadow",
+    title: "Live Tester",
     theme:"Theme.AppCompat.Translucent.NoTitleBar"
   }
 };

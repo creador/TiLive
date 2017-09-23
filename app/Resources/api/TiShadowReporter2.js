@@ -127,7 +127,7 @@ var TiShadowReporter2 = function(options) {
   }
 
   function indentByLevel(lvl) {
-    lvl = lvl || level
+    lvl = lvl || level;
     return Array(lvl + 1).join('  ');
   }
 
@@ -156,6 +156,6 @@ var TiShadowReporter2 = function(options) {
     --level;
     printNewline();
   }
-}
+};
 
-module.exports = TiShadowReporter2
+module.exports = TiShadowReporter2;

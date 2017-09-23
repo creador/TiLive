@@ -479,7 +479,7 @@ var Buffer;
 try { Buffer = require('buffer').Buffer; }
 catch(ex) {
   Buffer = {};
-  Buffer.isBuffer = function() { return false; }
+  Buffer.isBuffer = function() { return false; };
 }
 
 /*!

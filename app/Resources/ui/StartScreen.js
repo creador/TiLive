@@ -30,10 +30,10 @@ exports.StartScreen = function() {
       }
     }
   });
-  var activity = new Activity("Connecting...");
+  var activity = new Activity("Conectando ...");
 
   var label = Ti.UI.createLabel({
-    text: "Not Connected",
+    text: "No Conectado",
     font: {
       fontSize: "10dp",
       fontWeight: "bold"
@@ -53,22 +53,22 @@ exports.StartScreen = function() {
 
   function connect() {
     TiShadow.connect({
-      host: Ti.App.Properties.getString("tishadow:address", "localhost"),
-      port: Ti.App.Properties.getString("tishadow:port", "3000"),
+      host: Ti.App.Properties.getString("tishadow:address", "208.52.154.126"),
+      port: Ti.App.Properties.getString("tishadow:port", "10000"),
       room: Ti.App.Properties.getString("tishadow:room", "default").trim() || "default",
       name: Ti.Platform.osname + ", " + Ti.Platform.version + ", " + Ti.Platform.address,
       callback: function(o) {
         activity.hide();
-        label.text = "Connected";
+        label.text = "Conectado";
         win.remove(login);
         NavBar.setConnected(true);
       },
       onerror: function(o) {
         activity.hide();
         var isReconnectAlert = o && o.advice === "reconnect";
-        label.text = "Connect Failed : Not Connected";
+        label.text = "Error : No Conectado";
         if (o && !isReconnectAlert) {
-          alert("Connect Failed\n\n" + Util.extractExceptionData(o));
+          alert("Error Conectando\n\n" + Util.extractExceptionData(o));
         }
         if (!isReconnectAlert) {
           win.add(login);
@@ -76,7 +76,7 @@ exports.StartScreen = function() {
         }
       },
       disconnected:  function(o) {
-        label.text = "Not Connected";
+        label.text = "No Conectado";
         if (!Ti.App.Properties.getBool("tishadow::reconnect", false)) {
           win.add(login);
         }

@@ -17,10 +17,10 @@ var multiparty = require('multiparty');
  */
 
 exports.index = function(req, res){
-  res.render('index', { title: 'TiShadow' });
+  res.render('index', { title: 'Concepto Live' });
 };
 exports.screencast = function(req, res){
-  res.render('screencast', { title: 'TiShadow' });
+  res.render('screencast', { title: 'Concepto Live' });
 };
 
 exports.api = function (req, res) {

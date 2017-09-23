@@ -95,7 +95,7 @@ if(Ti.App.deployType !== 'production' && Ti.App.Properties.getString('tishadow_h
       },
       text: 'TiShadow Server IP',
       top : 30
-    }))
+    }));
     win.add(field);
     win.add(btn);
 
@@ -110,7 +110,7 @@ if(Ti.App.deployType !== 'production' && Ti.App.Properties.getString('tishadow_h
           itemId : ip,
           title : ip
         }
-      }
+      };
     });
     var currentIp = Ti.Platform.address;
     items.unshift({
@@ -119,7 +119,7 @@ if(Ti.App.deployType !== 'production' && Ti.App.Properties.getString('tishadow_h
         title : currentIp,
         subtitle : 'Current IP'
       }
-    })
+    });
     section.items = items;
     listView.addEventListener('itemclick', function (e) {
       field.value = e.itemId;

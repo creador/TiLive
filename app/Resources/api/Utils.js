@@ -67,7 +67,7 @@ if (Ti.UI.Android) {
 	extractExceptionData = function(e) {
 		//TODO: See how to get better info on MW and BB platforms
 		return "\nMessage: " + e.message;
-	}
+	};
 }
 
 exports.extractExceptionData = extractExceptionData;
