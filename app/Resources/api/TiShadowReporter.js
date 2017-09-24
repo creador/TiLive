@@ -10,13 +10,13 @@ var TiShadowReporter = function(onComplete) {
 };
 
 var ansi = {
-  green: '\033[32m',
-  red: '\033[31m',
-  yellow: '\033[33m',
-  none: '\033[0m',
-  white: '\033[37m',
-  bold_on:'\033[1m',
-  bold_off:'\033[22m',
+  green: '\x1B[32m',
+  red: '\x1B[31m',
+  yellow: '\x1B[33m',
+  none: '\x1B[0m',
+  white: '\x1B[37m',
+  bold_on:'\x1B[1m',
+  bold_off:'\x1B[22m',
 };
 
 function summaryLine(passed, failed, type) {
