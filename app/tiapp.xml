@@ -7,7 +7,7 @@
         <target device="android">true</target>
     </deployment-targets>
     <sdk-version>6.2.2.GA</sdk-version>
-    <id>cl.creador.livetester</id>
+    <id>{{APPID}}</id>
     <name>Live Tester</name>
     <version>1.0</version>
     <publisher>Creador S.A.</publisher>
