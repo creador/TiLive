@@ -186,7 +186,7 @@ config.write = function(env) {
   });
   var config_text = JSON.stringify(new_config, null, 4);
   console.log(config_text.grey);
-  console.log("TiShadow configuration file updated.");
+  console.log("TiLive configuration file updated.");
   fs.writeFileSync(config_path, config_text);
 };
 

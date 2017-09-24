@@ -12,9 +12,9 @@ var config = require("../../../../cli/support/config");
 
 exports.cliVersion = '>=3.2.0';
 exports.version = '1.0';
-exports.title = 'TiShadow Express';
-exports.desc  = 'For very basic and quick tishadow usage';
-exports.extendedDesc = 'Requires tishadow: `[sudo] npm install -g tishadow`';
+exports.title = 'TiLive Express';
+exports.desc  = 'For very basic and quick tilive usage';
+exports.extendedDesc = 'Requires tilive: `[sudo] npm install -g creador/tilive`';
 
 exports.config = function (logger, config, cli) {
   return {
@@ -30,10 +30,10 @@ function exit() {
   process.exit(1);
 }
 exports.startServer = function startServer(logger) {
-  logger.info("Starting TiShadow server");
+  logger.info("Starting TiLive server");
   var server = spawn("ts", ["server"], {stdio: ["ignore", "ignore", 2]});
   server.on('exit', function(){
-    logger.error("TiShadow Server exited.");
+    logger.error("TiLive Server exited.");
     exit();
   });
   server.on('error',function(err) {
@@ -90,7 +90,7 @@ exports.startWatch = function startWatch(logger, platform, ip_address) {
     logger.info("Starting Watch...");
     var watch = spawn('ts', args, {stdio: 'inherit'});
     watch.on('exit', function() {
-      logger.error("TiShadow watch exited.");
+      logger.error("TiLive watch exited.");
       exit();
     });
     children.push(watch);

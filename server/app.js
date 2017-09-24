@@ -57,7 +57,7 @@ function isUp() {
     if (address === "0.0.0.0") {
       address = "localhost";
     }
-    Logger.debug("TiShadow server started. Go to http://"+ address + ":" + port);
+    Logger.debug("TiLive server started. Go to http://"+ address + ":" + port);
     if (config.host !== "localhost") {
       Logger.debug("connect to " + config.host + ":" + port);
     } else {
