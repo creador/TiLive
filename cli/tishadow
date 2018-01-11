@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /*
- * Copyright (c) 2011-2014 YY Digital Pty Ltd. All Rights Reserved.
+ * Copyright (c) 2011-2017 Creador S.A. All Rights Reserved.
  * Please see the LICENSE file included with this distribution for details.
  */
 
@@ -168,18 +168,19 @@ program.command('config')
   .option('-i, --watch-interval <millis>', 'time to wait between checking files for changes (default: 100)')
   .option('-x, --watch-exclude <glob>', 'files to exclude from watch')
   .option('-n, --network-interface <interface>', 'set default network interface (used in express mode)')
+  .option('-e, --error-notification', 'enable error notification on macOS, Windows, Linux')
   .action(config.write);
 
 program.command('app')
   .description('generate a titanium project with TiLive app source code'.grey)
   .option('-d, --destination <path>', 'target path for generated project')
-  .option('-u, --upgrade', 'upgrade an existing tishadow app')
+  .option('-u, --upgrade', 'upgrade an existing tilive app')
   .action(function(env) {
     if (env.upgrade) {
       require('./support/appify').copyCoreProject(env);
     } else {
-      program.prompt("Enter app id [com.yydigital.tishadowapp]: ", function(appid) {
-        env.appid = appid.trim() || "com.yydigital.tishadowapp";
+      program.prompt("Enter app id [cl.creador.tilive]: ", function(appid) {
+        env.appid = appid.trim() || "cl.creador.tilive";
         require('./support/appify').copyCoreProject(env);
         process.stdin.destroy();
       });
@@ -187,7 +188,7 @@ program.command('app')
   });
 
 program.command('appify')
-  .description('generate an appified TiShadow app'.grey)
+  .description('generate an appified TiLive app'.grey)
   .option('-d, --destination <path>', 'target path for generated project')
   .option('-o, --host <host>', 'set server host name / ip address')
   .option('-p, --port <port>', 'set server port')
@@ -197,12 +198,12 @@ program.command('appify')
   .action(require('./support/appify').build);
 
 program.command('express')
-  .description('install a titanium cli command plugin `shadow` for simple tishadow development')
+  .description('install a titanium cli command plugin `shadow` for simple tilive development')
   .action(function() {
     var hooks = spawn('ti', ['config','paths.hooks','-a',path.join( __dirname ,'..', 'plugin','yy.tishadow','1.0','hooks')]);
     hooks.stderr.pipe(process.stderr);
     hooks.on("exit", function(code) {
-      code === 0 && logger.info("Titanium CLI hook installed. Now use the `--shadow` flag when buliding your project for express tishadow development");
+      code === 0 && logger.info("Titanium CLI hook installed. Now use the `--tilive` flag when buliding your project for express tilive development");
     });
   });
 
@@ -225,7 +226,10 @@ function execute(filenames) {
 if (config.isWatching) {
   config.buildPaths({},function() {
     var paths = [config.isAlloy ? "app" :"Resources"];
-    if(!config.isAlloy1_8_later && fs.existsSync(path.join(config.base, 'i18n'))){
+    if (
+      fs.existsSync(path.join(config.base, 'i18n')) && 
+      !fs.existsSync(path.join(config.base, 'i18n', 'alloy_generated'))
+      ){
       paths.push('i18n');
     }
     if (config.isSpec) {

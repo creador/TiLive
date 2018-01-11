@@ -168,6 +168,7 @@ program.command('config')
   .option('-i, --watch-interval <millis>', 'time to wait between checking files for changes (default: 100)')
   .option('-x, --watch-exclude <glob>', 'files to exclude from watch')
   .option('-n, --network-interface <interface>', 'set default network interface (used in express mode)')
+  .option('-e, --error-notification', 'enable error notification on macOS, Windows, Linux')
   .action(config.write);
 
 program.command('app')
@@ -225,7 +226,10 @@ function execute(filenames) {
 if (config.isWatching) {
   config.buildPaths({},function() {
     var paths = [config.isAlloy ? "app" :"Resources"];
-    if(!config.isAlloy1_8_later && fs.existsSync(path.join(config.base, 'i18n'))){
+    if (
+      fs.existsSync(path.join(config.base, 'i18n')) && 
+      !fs.existsSync(path.join(config.base, 'i18n', 'alloy_generated'))
+      ){
       paths.push('i18n');
     }
     if (config.isSpec) {

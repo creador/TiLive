@@ -50,13 +50,20 @@ exports.getBundle = function(req,res) {
 exports.postBundle = function(req, res) {
   var form = new multiparty.Form();
   form.parse(req, function(err, fields, files) {
-    Logger.log("WARN", null, "Remote Bundle Received");
-    var data = JSON.parse(fields.data[0]),
-        name = files.bundle[0].originalFilename.replace(".zip",""),
-        room = data.room;
+    Logger.log('WARN', null, 'Remote Bundle Received');
+    var data;
+    try {
+      data = JSON.parse(fields.data[0]);
+    } catch (e) {
+      Logger.error('Bad Data');
+      Logger.error(fields);
+      return;
+    }
+    var name = files.bundle[0].originalFilename.replace('.zip', ''),
+      room = data.room;
     rooms.addBundle(room, name, files.bundle[0].path);
     var curr = rooms.get(room);
-    Logger.log("INFO", null, "New Bundle: " + curr.bundle + " | " + name);
+    Logger.log('INFO', null, 'New Bundle: ' + curr.bundle + ' | ' + name);
 
     data.name = name;
     data.room = data.bundle = null;
@@ -64,9 +71,9 @@ exports.postBundle = function(req, res) {
       data.version = curr.version;
     }
     if (!data.deployOnly) {
-      sockets.emit(room, "bundle", data);
+      sockets.emit(room, 'bundle', data);
     }
-    res.send("OK", 200);
+    res.send('OK', 200);
   });
 };
 
