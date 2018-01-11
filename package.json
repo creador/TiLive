@@ -1,6 +1,6 @@
 {
   "name": "tilive",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "dependencies": {
     "archiver": "^1.3.0",
     "async": "^0.2.10",
@@ -21,8 +21,8 @@
     "multiparty": "^4.1.2",
     "node-notifier": "^5.1.2",
     "pkginfo": "^0.2.3",
-    "socket.io": "^1.7.3",
-    "socket.io-client": "^1.7.3",
+    "socket.io": "^0.9.17",
+    "socket.io-client": "^0.9.17",
     "tiapp": "0.0.3",
     "uglify-js": "^2.7.5",
     "underscore": "^1.8.3",
